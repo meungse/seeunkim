@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seeun Kim</title>
+  <link rel="icon" href="./asset/favicon.ico" type="image/x-icon" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap');
+    html, body {
+      height: 100%;
+      margin: 0 0 0 0;
+      padding: 0;
+      background: #fff;
+      color: #111;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      min-height: 100vh;
+    }
+
+    body, .content, .column, p, h2, ul, li {
+    word-break: keep-all;
+    overflow-wrap: normal;
+    }
+
+    .fixed-header-row {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      display: grid;
+      grid-template-columns: 3fr 5fr 4fr;
+      z-index: 100;
+      background: #fff;
+      border-bottom: 0px solid #eee;
+      box-shadow: 0 0px 0px rgba(0,0,0,0.02);
+      transition: grid-template-columns 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .fixed-header-row.col1-active { grid-template-columns: 4fr 5fr 3fr; }
+    .fixed-header-row.col2-active { grid-template-columns: 3fr 6fr 3fr; }
+    .fixed-header-row.col3-active { grid-template-columns: 2fr 6fr 4fr; }
+
+    .header-btn {
+      margin-left: 10px;
+      font-size: 1.0em;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: normal;
+      padding: 7px 0 6px 0;
+      border: none;
+      border-bottom: 0px solid transparent;
+      background: none;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      width: 100%;
+      color: #111;
+      outline: none;
+      user-select: none;
+      text-align: left;
+      box-sizing: border-box;
+    }
+
+    .header-btn.col1 { color: black; }
+    .header-btn.col2 { color: black; }
+    .header-btn.col3 { color: black; }
+    .header-btn.active {
+      background: #ffffff;
+      border-bottom: 0px solid currentColor;
+    }
+
+    .portfolio {
+      display: grid;
+      grid-template-columns: 3fr 5fr 4fr;
+      gap: 0;
+      padding: 56px 0 0 0;
+      height: 100vh;
+      box-sizing: border-box;
+      position: relative;
+      transition: grid-template-columns 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .portfolio.col1-active { grid-template-columns: 4fr 5fr 3fr; }
+    .portfolio.col2-active { grid-template-columns: 3fr 6fr 3fr; }
+    .portfolio.col3-active { grid-template-columns: 2fr 6fr 4fr; }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      background: rgba(255,255,255,0.96);
+      scrollbar-width: bold;
+      scrollbar-color: #ffffff #eee;
+      text-align: left;
+      position: relative;
+      padding-top: 0;  
+    }
+    .column:not(:first-child) .content {
+      border-left: 0px solid #bbb;
+    }
+    .column:not(:last-child) .content {
+      border-right: 0px solid #bbb;
+    }
+    /* 기존 컬럼 색상 및 트랜지션 추가 */
+    .col1 .content { background: white; transition: background 0.4s; }
+    .col2 .content { background: white; transition: background 0.4s; }
+    .col3 .content { background: white; transition: background 0.4s; }
+
+    /* 활성화(커질 때) 색상 지정 */
+    .portfolio.col1-active .col1 .content { background: rgb(255, 255, 255); }
+    .portfolio.col2-active .col2 .content { background: rgb(255, 255, 255); }
+    .portfolio.col3-active .col3 .content { background: rgb(255, 255, 255); }
+
+    .content {
+      text-align: left;
+      padding-left: 10px;
+      border-radius: 0;
+      cursor: pointer;
+      flex: 1 1 auto;
+      min-height: 0;
+      margin-top: 0;
+      border-top: none !important;
+    }
+    .content h2 {
+      font-size: 1em;
+      font-weight: 700;
+      margin: 0px 0px 8px 5px;
+      letter-spacing: 0.02em;
+      color: #111;
+      text-transform: uppercase;
+      text-align: left;
+    }
+    .content p, .content ul {
+      margin: 0px 30px 12px 7px;
+      color: #333;
+      text-align: left;
+    }
+    .content ul {
+      padding-left: 18px;
+      font-size: 0.98em;
+      text-align: left;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 12px 0 0 0;
+      border-radius: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .portfolio::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to right,
+        transparent,
+        transparent calc(100%/12*2 - 0.5px),
+        #bbb calc(100%/12*2 - 0.5px),
+        #bbb calc(100%/12*2),
+        transparent calc(100%/12*2),
+        transparent calc(100%/12*9 - 0.5px),
+        #bbb calc(100%/12*9 - 0.5px),
+        #bbb calc(100%/12*9),
+        transparent calc(100%/12*9),
+        transparent calc(100%/12*12 - 0.5px),
+        #bbb calc(100%/12*12 - 0.5px),
+        #bbb calc(100%/12*12)
+      );
+      z-index: 0;
+      opacity: 0.10;
+    }
+    .column, .content {
+      position: relative;
+      z-index: 1;
+    }
+    /* ===== 모바일 대응 ===== */
+    @media (max-width: 900px) {
+      html, body {
+        height: auto;
+        min-height: 100vh;
+      }
+      .fixed-header-row {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        z-index: 100;
+        box-shadow: none;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .header-btn {
+        font-size: 1.1em;
+        padding: 14px 0 10px 0;
+        border-bottom: 1px solid #eee;
+        min-height: 44px;
+        line-height: 1.2;
+        width: 100%;
+        margin: 0;
+      }
+      .portfolio {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 56px 0 12px 0; /* 헤더 높이만큼 패딩! */
+        height: auto;
+      }
+      .column {
+        height: auto;
+        min-height: 0;
+        overflow-y: visible;
+      }
+        
+      .column .content {
+        border: none !important;
+      }
+      .content {
+        scroll-margin-top: 10px; /* 헤더 높이만큼 스크롤 마진 */
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 상단 고정 3헤더 -->
+  <div class="fixed-header-row" id="headerRow">
+    <button class="header-btn col1" id="header1">Seeun Kim</button>
+    <button class="header-btn col2" id="header2">Works</button>
+    <button class="header-btn col3" id="header3">About Me</button>
+  </div>
+  <!-- 3단 그리드 (모바일에서는 1단 세로로) -->
+  <div class="portfolio" id="portfolioGrid">
+    <!-- COLUMN 1: CONTACT -->
+    <div class="column col1">
+      <div class="content" id="content1">
+
+        
+        <p>p&nbsp;&nbsp;&nbsp;&nbsp;+82 10 3169 0819</p>
+        <br>
+        <p>i&nbsp;&nbsp;&nbsp;&nbsp;@kimseeunse</p>
+
+        <p>e&nbsp;&nbsp;&nbsp;&nbsp;seeun618@naver.com</p>
+
+        <p>a&nbsp;&nbsp;&nbsp;&nbsp;04949 49, Wausan-ro, Mapo-gu, Seoul, Republic of Korea</p>
+        <p>e&nbsp;&nbsp;&nbsp;&nbsp;Hongik University Dept.of Visual Communication design</p>
+        
+      
+      </div>
+    </div>
+
+    <!-- COLUMN 2: WORKS -->
+    <div class="column col2">
+      <div class="content" id="content2">
+        <img src="asset/Portfolio 복사본.png" alt="Project A">
+        <!-- <br><p>배고팡</p> -->
+        <br>
+        
+        <img src="asset/21_.jpg" alt="Project B">
+        <!-- <br><p>저녁 뭐 먹지</p><br> -->
+        
+        <img src="asset/Portfolio8 복사본.png" alt="Project C">
+        <!-- <br><p>이번 학기에는 꼭 웹 포폴을 만든당!</p><br> -->
+
+        <img src="asset/Portfolio4 복사본.png" alt="Project D">
+        <!-- <br><p>이번 학기에는 꼭 웹 포폴을 만든당!</p><br> -->
+        
+        
+      </div>
+    </div>
+
+    <!-- COLUMN 3: ABOUT ME -->
+    <div class="column col3">
+      <div class="content" id="content3">
+        
+        <p>I am a designer who integrates the
+          physical properties of materials
+          into three-dimensional sculptures,
+          connecting them to the blank artboard
+          of design.<br></p>
+        <!-- <img src="asset/seeun.jpeg" alt="About Me Image"> -->
+      </div>
+    </div>
+  </div>
+  <script>
+    // 인터랙션 JS (하나로 통합)
+    const grid = document.getElementById('portfolioGrid');
+    const headerRow = document.getElementById('headerRow');
+    const headers = [
+      document.getElementById('header1'),
+      document.getElementById('header2'),
+      document.getElementById('header3')
+    ];
+    const contents = [
+      document.getElementById('content1'),
+      document.getElementById('content2'),
+      document.getElementById('content3')
+    ];
+
+    // 섹션 두 번 클릭하면 원래 비율로 복귀 (더블클릭 효과)
+    const lastClickTime = [0, 0, 0];
+    const doubleClickThreshold = 300; // ms
+
+    function activateColumn(idx) {
+      grid.classList.remove('col1-active', 'col2-active', 'col3-active');
+      headerRow.classList.remove('col1-active', 'col2-active', 'col3-active');
+      headers.forEach(h => h.classList.remove('active'));
+      grid.classList.add(`col${idx+1}-active`);
+      headerRow.classList.add(`col${idx+1}-active`);
+      headers[idx].classList.add('active');
+    }
+
+    contents.forEach((content, idx) => {
+      content.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const now = Date.now();
+        if (now - lastClickTime[idx] < doubleClickThreshold) {
+          // 두 번 연속 클릭: 원래 비율로 복귀
+          if (grid.classList.contains(`col${idx+1}-active`)) {
+            grid.classList.remove('col1-active', 'col2-active', 'col3-active');
+            headerRow.classList.remove('col1-active', 'col2-active', 'col3-active');
+            headers.forEach(h => h.classList.remove('active'));
+          } else {
+            activateColumn(idx);
+          }
+        } else {
+          activateColumn(idx);
+        }
+        lastClickTime[idx] = now;
+      });
+    });
+
+    // 모바일에서 헤더 클릭 시 해당 섹션(content)으로 스크롤
+    headers.forEach((header, idx) => {
+      header.addEventListener('click', (e) => {
+        e.stopPropagation();
+        activateColumn(idx);
+        if (window.innerWidth <= 900) {
+          contents[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // 아무 곳이나 클릭하면 원래 비율로 복귀
+    document.body.addEventListener('click', (e) => {
+      if (![...headers, ...contents].includes(e.target)) {
+        grid.classList.remove('col1-active', 'col2-active', 'col3-active');
+        headerRow.classList.remove('col1-active', 'col2-active', 'col3-active');
+        headers.forEach(h => h.classList.remove('active'));
+      }
+    });
+
+    const text = " ☆*: .｡. ꓄ꃅꀤꌗ ꀤꌗ ꂵꌩ ꅏꂦꋪ꒒ꀸ .｡.:*☆ ▄︻══━一 █▓▒­░⡷⠂ ꋪꍟꍏ꒒ ꌗꍟꍟꀎꈤ ⠐⢾░▒▓█ ♣͟͞͞➳ ";
+    let pos = 0;
+
+    function marqueeTitle() {
+    document.title = text.slice(pos) + text.slice(0, pos);
+    pos = (pos + 1) % text.length;
+    setTimeout(marqueeTitle, 100); // 숫자를 줄이면 더 빠르게, 늘리면 느리게
+    }
+    marqueeTitle();
+  </script>
+</body>
+</html>
